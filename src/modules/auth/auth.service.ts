@@ -1,9 +1,11 @@
 import { OtpType } from "@prisma/client";
 
+import { prisma } from "../../config/database.js";
+import { sendOtpEmail } from "../../services/email.service.js";
 import { generateOtp, hashOtp } from "../../utils/otp.js";
 import { hashPassword } from "../../utils/password.js";
+
 import { RegisterInput } from "./auth.schema.js";
-import { prisma } from "../../config/database.js";
 
 export async function registerUser(input: RegisterInput) {
   const { firstName, lastName, email, password, phone } = input;
@@ -33,6 +35,13 @@ export async function registerUser(input: RegisterInput) {
   const otp = generateOtp();
   const otpHash = await hashOtp(otp);
 
+  await prisma.otpVerification.deleteMany({
+    where: {
+      userId: user.id,
+      type: OtpType.REGISTER,
+    },
+  });
+
   await prisma.otpVerification.create({
     data: {
       type: OtpType.REGISTER,
@@ -42,8 +51,9 @@ export async function registerUser(input: RegisterInput) {
     },
   });
 
+  await sendOtpEmail(user.email, otp, "REGISTER");
+
   return {
     user,
-    otp,
   };
 }
