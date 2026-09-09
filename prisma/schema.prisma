@@ -1,0 +1,129 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  HOTEL_OWNER
+}
+
+model User {
+  id                      String @id @default(cuid())
+  firstName               String
+  lastName                String
+  email                   String @unique
+  password                String
+  phone                   String?
+  image                   String?
+
+  role                    UserRole @default(USER)
+  isVerified              Boolean  @default(false)
+
+  recentSearchedCities    String[] @default([])
+
+  hotels                  Hotel[]
+  bookings                Booking[]
+  otpVerifications        OtpVerification[]
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+
+enum OtpType {
+  REGISTER
+  PASSWORD_RESET
+}
+
+model OtpVerification {
+  id                String @id @default(cuid())
+  type              OtpType
+
+  userId            String
+  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  otpHash           String
+  expiresAt         DateTime
+
+  createdAt         DateTime @default(now())
+
+  @@index([userId, type])
+}
+
+model Hotel {
+  id                      String @id @default(cuid())
+  name                    String
+  address                 String
+  contact                 String
+  country                 String
+  city                    String
+
+  ownerId                 String
+  owner                   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  rooms                   Room[]
+  bookings                Booking[]
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+
+model Room {
+  id            String  @id @default(cuid())
+  roomType      String
+  pricePerNight Decimal  @db.Decimal(10, 2)
+  amenities     String[]
+  images        String[]
+  isAvailable   Boolean  @default(true)
+
+  hotelId       String
+  hotel         Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  bookings      Booking[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  PAY_AT_HOTEL
+  CARD
+}
+
+model Booking {
+  id                 String @id @default(cuid())
+
+  userId             String
+  user               User   @relation(fields: [userId], references: [id])
+
+  hotelId            String
+  hotel              Hotel  @relation(fields: [hotelId], references: [id])
+
+  roomId             String
+  room               Room   @relation(fields: [roomId], references: [id])
+
+  checkInDate        DateTime
+  checkOutDate       DateTime
+
+  totalPrice         Decimal @db.Decimal(10, 2)
+  guests             Int
+
+  status             BookingStatus @default(PENDING)
+  paymentMethod      PaymentMethod @default(PAY_AT_HOTEL)
+  isPaid             Boolean       @default(false)
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
