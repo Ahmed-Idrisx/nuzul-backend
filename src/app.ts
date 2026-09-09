@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 
 import { env } from "./config/env.js";
 
+import authRoutes from "./modules/auth/auth.routes.js";
+
 const app = express();
 
 app.use(
@@ -13,15 +15,11 @@ app.use(
   }),
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(express.json()); // body parsing middleware
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(cookieParser()); // Parse Cookie header and populate req.cookies
 
-app.get("/health", (_req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "Nuzul API is running",
-  });
-});
+// auth
+app.use("/api/auth", authRoutes);
 
 export default app;
