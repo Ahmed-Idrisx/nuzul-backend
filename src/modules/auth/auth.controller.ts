@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 
 import { errorResponse, successResponse } from "../../utils/api-response.js";
 import {
-  getCurrentUser,
   loginUser,
   otpVerify,
   passwordReset,
@@ -143,23 +142,4 @@ export function logout(_req: Request, res: Response) {
   });
 
   return successResponse(res, "Logged out successfully", []);
-}
-
-export async function getMe(req: AuthRequest, res: Response) {
-  try {
-    const user = await getCurrentUser(req.userId!);
-
-    return successResponse(res, "Current user retrieved successfully", [user]);
-  } catch (error) {
-    if (error instanceof Error) {
-      return errorResponse(res, 404, error.message, error.message);
-    }
-
-    return errorResponse(
-      res,
-      500,
-      "Internal server error",
-      "Something went wrong",
-    );
-  }
 }

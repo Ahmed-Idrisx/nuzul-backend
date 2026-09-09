@@ -255,27 +255,3 @@ export async function passwordReset(input: ResetPasswordInput) {
     }),
   ]);
 }
-
-export async function getCurrentUser(userId: string) {
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-      phone: true,
-      image: true,
-      role: true,
-      isVerified: true,
-    },
-  });
-
-  if (!user) {
-    throw new Error("User not found");
-  }
-
-  return user;
-}

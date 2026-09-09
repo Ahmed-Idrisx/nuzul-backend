@@ -2,7 +2,6 @@ import { Router } from "express";
 
 import {
   forgotPassword,
-  getMe,
   login,
   logout,
   register,
@@ -17,7 +16,6 @@ import {
   verifyOtpSchema,
 } from "./auth.schema.js";
 import { validateRequest } from "../../middlewares/validate.request.js";
-import { protect } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -35,5 +33,5 @@ router.post(
   resetPassword,
 );
 router.post("/logout", logout);
-router.get("/me", protect, getMe);
+
 export default router;

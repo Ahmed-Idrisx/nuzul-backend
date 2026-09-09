@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { env } from "./config/env.js";
 
 import authRoutes from "./modules/auth/auth.routes.js";
+import userRoutes from "./modules/user/user.routes.js";
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.use(cookieParser()); // Parse Cookie header and populate req.cookies
 
 // auth
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
 export default app;
