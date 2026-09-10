@@ -2,6 +2,7 @@ import { prisma } from "../../config/database.js";
 import { imagekit } from "../../config/imagekit.js";
 import { CreateHotelInput } from "./hotel.schema.js";
 
+// Creates a new hotel for the authenticated user
 export async function createHotel(
   userId: string,
   input: CreateHotelInput,
@@ -67,4 +68,70 @@ export async function createHotel(
       },
     }),
   ]);
+}
+
+// get all hotels
+export async function listHotels() {
+  const hotels = await prisma.hotel.findMany({
+    select: {
+      id: true,
+      name: true,
+      image: true,
+      country: true,
+      city: true,
+      shortDescription: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return hotels;
+}
+
+// get hotel by id
+export async function getHotelById(hotelId: string) {
+  const hotel = await prisma.hotel.findUnique({
+    where: {
+      id: hotelId,
+    },
+    select: {
+      id: true,
+      name: true,
+      image: true,
+      country: true,
+      city: true,
+      address: true,
+      contact: true,
+      shortDescription: true,
+      description: true,
+      facilities: true,
+
+      rooms: {
+        where: {
+          isAvailable: true,
+        },
+        select: {
+          id: true,
+          roomType: true,
+          shortDescription: true,
+          description: true,
+          amenities: true,
+          pricePerNight: true,
+          maxGuests: true,
+          images: true,
+          isAvailable: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
+  });
+
+  if (!hotel) {
+    throw new Error("Hotel not found");
+  }
+
+  return hotel;
 }
