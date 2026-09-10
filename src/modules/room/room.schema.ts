@@ -45,4 +45,11 @@ export const createRoomSchema = z.object({
     .min(1, "Maximum guests must be at least 1"),
 });
 
+export const toggleRoomAvailabilitySchema = z.object({
+  roomId: z.string().min(1, "Room ID is required"),
+});
+
 export type CreateRoomInput = z.infer<typeof createRoomSchema>;
+export type ToggleRoomAvailabilityInput = z.infer<
+  typeof toggleRoomAvailabilitySchema
+>;
