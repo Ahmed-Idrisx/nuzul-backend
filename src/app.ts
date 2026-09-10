@@ -8,6 +8,7 @@ import { env } from "./config/env.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import hotelRoutes from "./modules/hotel/hotel.routes.js";
+import roomRoutes from "./modules/room/room.routes.js";
 
 const app = express();
 
@@ -29,5 +30,8 @@ app.use("/api/user", userRoutes);
 
 // hotel
 app.use("/api/hotels", hotelRoutes);
+
+// rooms
+app.use("/api/rooms", roomRoutes);
 
 export default app;
