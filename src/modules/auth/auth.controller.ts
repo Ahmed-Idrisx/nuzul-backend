@@ -9,7 +9,6 @@ import {
   sendResetOtp,
 } from "./auth.service.js";
 import { env } from "../../config/env.js";
-import { AuthRequest } from "../../middlewares/auth.middleware.js";
 
 export async function register(req: Request, res: Response) {
   try {

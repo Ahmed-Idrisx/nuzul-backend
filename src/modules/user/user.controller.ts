@@ -34,8 +34,8 @@ export async function updateMe(req: AuthRequest, res: Response) {
       return errorResponse(
         res,
         400,
-        "Failed to update your data",
         error.message,
+        "Failed to update your data",
       );
     }
 

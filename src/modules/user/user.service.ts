@@ -21,10 +21,6 @@ export async function getCurrentUser(userId: string) {
     },
   });
 
-  if (!user) {
-    throw new Error("User not found");
-  }
-
   return user;
 }
 
