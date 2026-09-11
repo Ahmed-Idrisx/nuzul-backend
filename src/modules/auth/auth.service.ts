@@ -58,7 +58,11 @@ export async function registerUser(input: RegisterInput) {
     },
   });
 
-  await sendOtpEmail(user.email, otp, "REGISTER");
+  try {
+    await sendOtpEmail(user.email, otp, "REGISTER");
+  } catch (error) {
+    console.error("Failed to send OTP:", error);
+  }
 }
 
 export async function otpVerify(input: VerifyOtpInput) {
@@ -192,7 +196,11 @@ export async function sendResetOtp(input: ForgotPasswordInput) {
     },
   });
 
-  await sendOtpEmail(user.email, otp, "PASSWORD_RESET");
+  try {
+    await sendOtpEmail(user.email, otp, "PASSWORD_RESET");
+  } catch (error) {
+    console.error("Failed to send OTP:", error);
+  }
 }
 
 export async function passwordReset(input: ResetPasswordInput) {

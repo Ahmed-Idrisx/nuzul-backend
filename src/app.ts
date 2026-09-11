@@ -9,6 +9,7 @@ import authRoutes from "./modules/auth/auth.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import hotelRoutes from "./modules/hotel/hotel.routes.js";
 import roomRoutes from "./modules/room/room.routes.js";
+import bookingRoutes from "./modules/booking/booking.routes.js";
 
 const app = express();
 
@@ -33,5 +34,8 @@ app.use("/api/hotels", hotelRoutes);
 
 // rooms
 app.use("/api/rooms", roomRoutes);
+
+// booking
+app.use("/api/booking", bookingRoutes);
 
 export default app;

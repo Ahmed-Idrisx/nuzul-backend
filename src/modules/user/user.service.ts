@@ -16,7 +16,7 @@ export async function getCurrentUser(userId: string) {
       isVerified: true,
       recentSearchedCities: true,
 
-      hotels: true,
+      hotel: true,
       bookings: true,
     },
   });
