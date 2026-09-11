@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
-import { errorResponse, successResponse } from "../../utils/api-response.js";
+import { successResponse } from "../../utils/api-response.js";
 import {
   loginUser,
   otpVerify,
@@ -10,7 +10,11 @@ import {
 } from "./auth.service.js";
 import { env } from "../../config/env.js";
 
-export async function register(req: Request, res: Response) {
+export async function register(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     await registerUser(req.body);
 
@@ -21,39 +25,25 @@ export async function register(req: Request, res: Response) {
       201,
     );
   } catch (error) {
-    if (error instanceof Error) {
-      return errorResponse(res, 409, error.message, error.message);
-    }
-
-    return errorResponse(
-      res,
-      500,
-      "Internal server error",
-      "Something went wrong",
-    );
+    next(error);
   }
 }
 
-export async function verifyOtp(req: Request, res: Response) {
+export async function verifyOtp(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     await otpVerify(req.body);
 
     return successResponse(res, "Email verified successfully", [], 200);
   } catch (error) {
-    if (error instanceof Error) {
-      return errorResponse(res, 409, error.message, error.message);
-    }
-
-    return errorResponse(
-      res,
-      500,
-      "Internal server error",
-      "Something went wrong",
-    );
+    next(error);
   }
 }
 
-export async function login(req: Request, res: Response) {
+export async function login(req: Request, res: Response, next: NextFunction) {
   try {
     const { user, token } = await loginUser(req.body);
 
@@ -77,20 +67,15 @@ export async function login(req: Request, res: Response) {
       },
     ]);
   } catch (error) {
-    if (error instanceof Error) {
-      return errorResponse(res, 401, error.message, error.message);
-    }
-
-    return errorResponse(
-      res,
-      500,
-      "Internal server error",
-      "Something went wrong",
-    );
+    next(error);
   }
 }
 
-export async function forgotPassword(req: Request, res: Response) {
+export async function forgotPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     await sendResetOtp(req.body);
 
@@ -101,35 +86,21 @@ export async function forgotPassword(req: Request, res: Response) {
       200,
     );
   } catch (error) {
-    if (error instanceof Error) {
-      return errorResponse(res, 500, error.message, error.message);
-    }
-
-    return errorResponse(
-      res,
-      500,
-      "Internal server error",
-      "Something went wrong",
-    );
+    next(error);
   }
 }
 
-export async function resetPassword(req: Request, res: Response) {
+export async function resetPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     await passwordReset(req.body);
 
     return successResponse(res, "Password reset successfully", [], 200);
   } catch (error) {
-    if (error instanceof Error) {
-      return errorResponse(res, 400, error.message, error.message);
-    }
-
-    return errorResponse(
-      res,
-      500,
-      "Internal server error",
-      "Something went wrong",
-    );
+    next(error);
   }
 }
 

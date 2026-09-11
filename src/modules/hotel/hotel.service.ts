@@ -1,5 +1,6 @@
 import { prisma } from "../../config/database.js";
 import { imagekit } from "../../config/imagekit.js";
+import { AppError } from "../../utils/app-error.js";
 import { CreateHotelInput } from "./hotel.schema.js";
 
 // Creates a new hotel for the authenticated user
@@ -20,11 +21,11 @@ export async function createHotel(
   });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
 
   if (user.hotel) {
-    throw new Error("You already have a hotel");
+    throw new AppError("You already have a hotel", 409);
   }
 
   let image: string | undefined;
@@ -130,7 +131,7 @@ export async function getHotelById(hotelId: string) {
   });
 
   if (!hotel) {
-    throw new Error("Hotel not found");
+    throw new AppError("Hotel not found", 404);
   }
 
   return hotel;

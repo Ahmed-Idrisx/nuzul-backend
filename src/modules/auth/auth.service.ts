@@ -13,6 +13,7 @@ import {
   VerifyOtpInput,
 } from "./auth.schema.js";
 import { generateToken } from "../../utils/jwt-token.js";
+import { AppError } from "../../utils/app-error.js";
 
 export async function registerUser(input: RegisterInput) {
   const { firstName, lastName, email, password, phone } = input;
@@ -24,7 +25,7 @@ export async function registerUser(input: RegisterInput) {
   });
 
   if (existingUser) {
-    throw new Error("Email is already registered");
+    throw new AppError("Email is already registered", 400);
   }
 
   const hashedPassword = await hashPassword(password);
@@ -75,11 +76,11 @@ export async function otpVerify(input: VerifyOtpInput) {
   });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
 
   if (user.isVerified) {
-    throw new Error("User is already verified");
+    throw new AppError("User is already verified", 400);
   }
 
   const otpVerification = await prisma.otpVerification.findFirst({
@@ -93,7 +94,7 @@ export async function otpVerify(input: VerifyOtpInput) {
   });
 
   if (!otpVerification) {
-    throw new Error("OTP not found or expired");
+    throw new AppError("OTP not found or expired", 400);
   }
 
   if (otpVerification.expiresAt < new Date()) {
@@ -103,13 +104,13 @@ export async function otpVerify(input: VerifyOtpInput) {
       },
     });
 
-    throw new Error("OTP has expired");
+    throw new AppError("OTP has expired", 400);
   }
 
   const isOtpValid = await compareOtp(otp, otpVerification.otpHash);
 
   if (!isOtpValid) {
-    throw new Error("Invalid OTP");
+    throw new AppError("Invalid OTP", 400);
   }
 
   await prisma.$transaction([
@@ -139,17 +140,17 @@ export async function loginUser(input: LoginInput) {
   });
 
   if (!user) {
-    throw new Error("Invalid email or password");
+    throw new AppError("Invalid email or password", 400);
   }
 
   if (!user.isVerified) {
-    throw new Error("Please verify your email first");
+    throw new AppError("Please verify your email first", 400);
   }
 
   const isPasswordValid = await comparePassword(password, user.password);
 
   if (!isPasswordValid) {
-    throw new Error("Invalid email or password");
+    throw new AppError("Invalid email or password", 400);
   }
 
   const token = generateToken(user.id);
@@ -211,7 +212,7 @@ export async function passwordReset(input: ResetPasswordInput) {
   });
 
   if (!user) {
-    throw new Error("Invalid OTP or email");
+    throw new AppError("Invalid OTP or email", 400);
   }
 
   const otpVerification = await prisma.otpVerification.findFirst({
@@ -225,7 +226,7 @@ export async function passwordReset(input: ResetPasswordInput) {
   });
 
   if (!otpVerification) {
-    throw new Error("OTP not found or expired");
+    throw new AppError("OTP not found or expired", 400);
   }
 
   if (otpVerification.expiresAt < new Date()) {
@@ -235,13 +236,13 @@ export async function passwordReset(input: ResetPasswordInput) {
       },
     });
 
-    throw new Error("OTP has expired");
+    throw new AppError("OTP has expired", 400);
   }
 
   const isOtpValid = await compareOtp(otp, otpVerification.otpHash);
 
   if (!isOtpValid) {
-    throw new Error("Invalid OTP");
+    throw new AppError("Invalid OTP", 400);
   }
 
   const hashedPassword = await hashPassword(newPassword);

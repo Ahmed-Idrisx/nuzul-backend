@@ -1,9 +1,13 @@
-import { Response } from "express";
+import { NextFunction, Response } from "express";
 import { AuthRequest } from "../../middlewares/auth.middleware.js";
-import { errorResponse, successResponse } from "../../utils/api-response.js";
+import { successResponse } from "../../utils/api-response.js";
 import { bookingRoom, checkRoomAvailability } from "./booking.service.js";
 
-export async function checkAvailability(req: AuthRequest, res: Response) {
+export async function checkAvailability(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const isAvailable = await checkRoomAvailability(req.body);
 
@@ -14,25 +18,15 @@ export async function checkAvailability(req: AuthRequest, res: Response) {
       200,
     );
   } catch (error) {
-    if (error instanceof Error) {
-      return errorResponse(
-        res,
-        400,
-        "Failed to check room availability",
-        error.message,
-      );
-    }
-
-    return errorResponse(
-      res,
-      500,
-      "Internal server error",
-      "Something went wrong",
-    );
+    next(error);
   }
 }
 
-export async function createBooking(req: AuthRequest, res: Response) {
+export async function createBooking(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     await bookingRoom(req.userId!, req.body);
 
@@ -43,15 +37,6 @@ export async function createBooking(req: AuthRequest, res: Response) {
       201,
     );
   } catch (error) {
-    if (error instanceof Error) {
-      return errorResponse(res, 400, "Failed to create booking", error.message);
-    }
-
-    return errorResponse(
-      res,
-      500,
-      "Internal server error",
-      "Something went wrong",
-    );
+    next(error);
   }
 }

@@ -1,5 +1,6 @@
 import { prisma } from "../../config/database.js";
 import { sendBookingEmail } from "../../services/booking.service.js";
+import { AppError } from "../../utils/app-error.js";
 import {
   CheckAvailabilityInput,
   CreateBookingInput,
@@ -38,10 +39,10 @@ async function isRoomAvailable(
   });
 
   if (!room) {
-    throw new Error("Room not found");
+    throw new AppError("Room not found", 404);
   }
   if (guests > room.maxGuests) {
-    throw new Error("Number of guests exceeds room capacity");
+    throw new AppError("Number of guests exceeds room capacity", 400);
   }
 
   const isAvailable = room.isAvailable && room.bookings.length === 0;
@@ -58,7 +59,7 @@ export async function checkRoomAvailability(input: CheckAvailabilityInput) {
   );
 
   if (!isAvailable) {
-    throw new Error("Room is not available for the selected dates");
+    throw new AppError("Room is not available for the selected dates", 409);
   }
 }
 
@@ -72,7 +73,7 @@ export async function bookingRoom(userId: string, input: CreateBookingInput) {
   );
 
   if (!isAvailable) {
-    throw new Error("Room is not available for the selected dates");
+    throw new AppError("Room is not available for the selected dates", 409);
   }
 
   const room = await prisma.room.findUnique({
@@ -86,7 +87,7 @@ export async function bookingRoom(userId: string, input: CreateBookingInput) {
   });
 
   if (!room) {
-    throw new Error("Room not found");
+    throw new AppError("Room not found", 404);
   }
 
   const timeDiff = checkOutDate.getTime() - checkInDate.getTime();

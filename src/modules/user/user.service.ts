@@ -1,5 +1,6 @@
 import { prisma } from "../../config/database.js";
 import { imagekit } from "../../config/imagekit.js";
+import { AppError } from "../../utils/app-error.js";
 import { AddRecentCityInput, UpdateUserInput } from "./user.schema.js";
 
 export async function getCurrentUser(userId: string) {
@@ -21,6 +22,10 @@ export async function getCurrentUser(userId: string) {
     },
   });
 
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
   return user;
 }
 
@@ -37,7 +42,7 @@ export async function updateUser(
   });
 
   if (!currentUser) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
   const oldImageId = currentUser.imageId;
 
@@ -94,7 +99,7 @@ export async function addSearchedCity(
   });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
 
   const city = input.city.trim();

@@ -10,6 +10,11 @@ import userRoutes from "./modules/user/user.routes.js";
 import hotelRoutes from "./modules/hotel/hotel.routes.js";
 import roomRoutes from "./modules/room/room.routes.js";
 import bookingRoutes from "./modules/booking/booking.routes.js";
+// error handling middleware
+import {
+  globalErrorHandler,
+  notFound,
+} from "./middlewares/error.middleware.js";
 
 const app = express();
 
@@ -37,5 +42,9 @@ app.use("/api/rooms", roomRoutes);
 
 // booking
 app.use("/api/booking", bookingRoutes);
+
+// error handling middleware
+app.use(notFound);
+app.use(globalErrorHandler);
 
 export default app;

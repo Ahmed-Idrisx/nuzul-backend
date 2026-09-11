@@ -1,5 +1,6 @@
 import { prisma } from "../../config/database.js";
 import { imagekit } from "../../config/imagekit.js";
+import { AppError } from "../../utils/app-error.js";
 
 import { CreateRoomInput, ToggleRoomAvailabilityInput } from "./room.schema.js";
 
@@ -20,11 +21,11 @@ export async function roomCreator(
   });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
 
   if (!user.hotel) {
-    throw new Error("You don't have a hotel");
+    throw new AppError("You don't have a hotel", 404);
   }
 
   const images: string[] = [];
@@ -74,11 +75,11 @@ export async function roomAvailabilityToggler(
   });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
 
   if (!user.hotel) {
-    throw new Error("You don't have a hotel");
+    throw new AppError("You don't have a hotel", 404);
   }
 
   const room = await prisma.room.findFirst({
@@ -93,7 +94,7 @@ export async function roomAvailabilityToggler(
   });
 
   if (!room) {
-    throw new Error("Room not found");
+    throw new AppError("Room not found", 404);
   }
 
   return prisma.room.update({
