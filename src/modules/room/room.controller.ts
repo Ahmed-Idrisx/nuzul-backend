@@ -27,12 +27,12 @@ export async function createRoom(req: AuthRequest, res: Response) {
 
 export async function toggleRoomAvailability(req: AuthRequest, res: Response) {
   try {
-    await roomAvailabilityToggler(req.userId!, req.body);
+    const room = await roomAvailabilityToggler(req.userId!, req.body);
 
     return successResponse(
       res,
       "Room availability updated successfully",
-      [],
+      [room],
       200,
     );
   } catch (error) {

@@ -5,11 +5,14 @@ import { bookingRoom, checkRoomAvailability } from "./booking.service.js";
 
 export async function checkAvailability(req: AuthRequest, res: Response) {
   try {
-    // const { roomId, checkInDate, checkOutDate } = req.body;
+    const isAvailable = await checkRoomAvailability(req.body);
 
-    await checkRoomAvailability(req.body);
-
-    return successResponse(res, "Room is available", [], 200);
+    return successResponse(
+      res,
+      "Room is available",
+      [{ isAvailable: isAvailable }],
+      200,
+    );
   } catch (error) {
     if (error instanceof Error) {
       return errorResponse(
