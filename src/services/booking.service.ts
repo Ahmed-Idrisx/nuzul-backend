@@ -28,17 +28,17 @@ export async function sendBookingEmail({
     subject: "Hotel Booking Details",
     html: `
       <h2>Your Booking Details</h2>
-        <p>Dear ${guestName},</p>
-        <p>Thank you for your booking! And here are your booking details</p>
-        <ul>
-          <li><strong>Booking ID: </strong>${bookingId}</li>
-          <li><strong>Hotel Name: </strong>${hotelName}</li>
-          <li><strong>Location: </strong>${hotelAddress}</li>
-          <li><strong>Date: </strong>From ${checkInDate.toDateString()} To ${checkOutDate.toDateString()}</li>
-          <li><strong>Total Amount: </strong>$${totalPrice.toFixed(2)}</li>
-        </ul>
-        <p>We look forward to welcoming you!</p>
-        <p>If you need to make any changes, feel free to contact us.</p>
+      <p>Dear ${guestName},</p>
+      <p>Thank you for your booking! And here are your booking details</p>
+      <ul>
+       <li><strong>Booking ID: </strong>${bookingId}</li>
+        <li><strong>Hotel Name: </strong>${hotelName}</li>
+        <li><strong>Location: </strong>${hotelAddress}</li>
+        <li><strong>Date: </strong>From ${checkInDate.toDateString()} To ${checkOutDate.toDateString()}</li>
+        <li><strong>Total Amount: </strong>$${totalPrice.toFixed(2)}</li>
+      </ul>
+      <p>We look forward to welcoming you!</p>
+      <p>If you need to make any changes, feel free to contact us.</p>
     `,
   });
 }

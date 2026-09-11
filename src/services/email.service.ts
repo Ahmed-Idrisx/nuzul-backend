@@ -12,26 +12,24 @@ export async function sendOtpEmail(
       : "Reset your Nuzul password";
 
   const title =
-    type === "REGISTER" ? "تأكيد البريد الإلكتروني" : "إعادة تعيين كلمة المرور";
+    type === "REGISTER" ? "Verify your account" : "Reset your password";
 
   await transporter.sendMail({
     from: `"Nuzul" <${env.SMTP_FROM}>`,
     to: email,
     subject,
     html: `
-      <div style="font-family: Arial, sans-serif; direction: rtl;">
         <h2>${title}</h2>
 
-        <p>رمز التحقق الخاص بك هو:</p>
+        <p>Your verification code is:</p>
 
         <h1 style="letter-spacing: 8px;">
           ${otp}
         </h1>
 
-        <p>هذا الرمز صالح لمدة 10 دقائق فقط.</p>
+        <p>This code is valid for 10 minutes only.</p>
 
-        <p>إذا لم تطلب هذا الرمز، يمكنك تجاهل هذه الرسالة.</p>
-      </div>
+        <p>If you didn't request this code, you can ignore this message.</p>
     `,
   });
 }
