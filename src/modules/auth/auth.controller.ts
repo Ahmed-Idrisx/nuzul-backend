@@ -50,7 +50,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     res.cookie("accessToken", token, {
       httpOnly: true,
       secure: env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -108,7 +108,7 @@ export function logout(_req: Request, res: Response) {
   res.clearCookie("accessToken", {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none",
   });
 
   return successResponse(res, "Logged out successfully", []);
