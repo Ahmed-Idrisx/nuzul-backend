@@ -16,8 +16,11 @@ export async function getCurrentUser(userId: string) {
       role: true,
       isVerified: true,
       recentSearchedCities: true,
-
-      hotel: true,
+      hotel: {
+        include: {
+          rooms: true,
+        },
+      },
       bookings: true,
     },
   });
