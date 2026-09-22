@@ -32,6 +32,8 @@ export async function getCurrentUser(userId: string) {
               phone: true,
             },
           },
+          hotel: true,
+          room: true,
         },
       },
     },
