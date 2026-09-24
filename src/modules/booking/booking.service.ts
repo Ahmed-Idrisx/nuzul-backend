@@ -4,6 +4,7 @@ import { AppError } from "../../utils/app-error.js";
 import {
   CheckAvailabilityInput,
   CreateBookingInput,
+  UpdateBookingStatusInput,
 } from "./booking.schema.js";
 
 async function isRoomAvailable(
@@ -138,4 +139,36 @@ export async function bookingRoom(userId: string, input: CreateBookingInput) {
   }
 
   return booking;
+}
+
+export async function statusUpdateBooking(
+  ownerId: string,
+  bookingId: string,
+  input: UpdateBookingStatusInput,
+) {
+  const booking = await prisma.booking.findFirst({
+    where: {
+      id: bookingId,
+      hotel: {
+        ownerId,
+      },
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!booking) {
+    throw new AppError("Booking not found", 404);
+  }
+
+  return prisma.booking.update({
+    where: {
+      id: booking.id,
+    },
+    data: {
+      status: input.status,
+      isPaid: input.status === "PAID",
+    },
+  });
 }

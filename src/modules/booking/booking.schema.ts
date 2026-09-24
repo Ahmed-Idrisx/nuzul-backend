@@ -24,5 +24,10 @@ export const createBookingSchema = z
     path: ["checkOutDate"],
   });
 
+export const updateBookingStatusSchema = z.object({
+  status: z.enum(["PENDING", "PAID", "CANCELLED"]),
+});
+
 export type CreateBookingInput = z.infer<typeof createBookingSchema>;
 export type CheckAvailabilityInput = z.infer<typeof checkAvailabilitySchema>;
+export type UpdateBookingStatusInput = z.infer<typeof updateBookingStatusSchema>;

@@ -106,7 +106,7 @@ model Room {
 
 enum BookingStatus {
   PENDING
-  CONFIRMED
+  PAID
   CANCELLED
 }
 
