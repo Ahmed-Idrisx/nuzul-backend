@@ -19,6 +19,20 @@ export async function getCurrentUser(userId: string) {
       hotel: {
         include: {
           rooms: true,
+          bookings: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                  phone: true,
+                },
+              },
+              room: true,
+            },
+          },
         },
       },
       bookings: {
